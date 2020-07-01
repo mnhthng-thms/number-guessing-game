@@ -7,34 +7,28 @@ const getPlayerGuess = () =>
 
 // !! strictly pure !!
 const justifyGuess = (targetNumber) => (guessNumber) => {
-  const condWhenPos = R.cond ([
-    [ R.lte(5), 
-      R.always ("Your guess is higher than expected!")
-    ], 
-    [ R.allPass ([R.gt(5), R.lte(10)]), 
-      R.always ("Your guess is too high compared to the target number!")
+  const judgeDiff = R.cond ([
+    [ R.flip (R.lte) (-10), 
+      R.always ("Your guess is way too low compared to the target number!")
     ],
-    [ R.T, 
-      R.always ("Your guess is way too high compared to the target number!")
-    ]
-  ]); 
-  
-  const condWhenNeg = R.cond ([
-    [ R.gte(-5), 
-      R.always ("Your guess is lower than expected!")
-    ], 
-    [ R.allPass ([R.gt(-10), R.lte(-5)]), 
+    [ R.allPass ([ R.flip (R.gt) (-10), R.flip (R.lte) (-5)]), 
       R.always ("Your guess is too low compared to the target number!")
     ],
-    [ R.T, 
-      R.always ("Your guess is way too low compared to the target number!")
+    [ R.allPass ([ R.flip (R.gte) (-5), R.flip (R.lt) (0)]), 
+      R.always ("Your guess is lower than expected!")
+    ], 
+    [ R.equals (0), 
+      R.always ("Congratulations!! You guessed correctly!")
+    ],
+    [ R.allPass ([ R.flip (R.gt) (0), R.flip (R.lte) (5)]), 
+      R.always ("Your guess is higher than expected!")
+    ], 
+    [ R.allPass ([ R.flip (R.gt) (5), R.flip (R.lte) (10)]), 
+      R.always ("Your guess is too high compared to the target number!")
+    ],
+    [ R.flip (R.gte) (10), 
+      R.always ("Your guess is way too high compared to the target number!")
     ]
-  ]);
-
-  const judgeDiff = R.cond ([
-    [ R.gt(0), condWhenPos ], 
-    [ R.lt(0), condWhenNeg ], 
-    [ R.T, R.always ("Congratulations!! You guessed correctly!")] 
   ])
 
   return judgeDiff(guessNumber - targetNumber);
