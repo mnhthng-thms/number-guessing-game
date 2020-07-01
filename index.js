@@ -7,22 +7,37 @@ const getPlayerGuess = () =>
 
 // !! strictly pure !!
 const justifyGuess = (targetNumber) => (guessNumber) => {
-  const diff = guessNumber - targetNumber;
+  const condWhenPos = R.cond ([
+    [ R.lte(5), 
+      R.always ("Your guess is higher than expected!")
+    ], 
+    [ R.allPass ([R.gt(5), R.lte(10)]), 
+      R.always ("Your guess is too high compared to the target number!")
+    ],
+    [ R.T, 
+      R.always ("Your guess is way too high compared to the target number!")
+    ]
+  ]); 
+  
+  const condWhenNeg = R.cond ([
+    [ R.gte(-5), 
+      R.always ("Your guess is lower than expected!")
+    ], 
+    [ R.allPass ([R.gt(-10), R.lte(-5)]), 
+      R.always ("Your guess is too low compared to the target number!")
+    ],
+    [ R.T, 
+      R.always ("Your guess is way too low compared to the target number!")
+    ]
+  ]);
 
-  if (diff > 0) {
-    if (diff <= 5) return "Your guess is higher than expected!";
-    if (diff > 5 && diff <= 10)
-      return "Your guess is too high compared to the target number!";
-    return "Your guess is way too high compared to the target number!";
-  }
-  if (diff < 0) {
-    if (diff >= -5) return "Your guess is lower than expected!";
-    if (diff >= -10 && diff < -5)
-      return "Your guess is too low compared to the target number!";
-    return "Your guess is way too low compared to the target number!";
-  }
+  const judgeDiff = R.cond ([
+    [ R.gt(0), condWhenPos ], 
+    [ R.lt(0), condWhenNeg ], 
+    [ R.T, R.always ("Congratulations!! You guessed correctly!")] 
+  ])
 
-  return "Congratulations!! You guessed correctly!";
+  return judgeDiff(guessNumber - targetNumber);
 };
 
 // update message container based on the passed-in message string
