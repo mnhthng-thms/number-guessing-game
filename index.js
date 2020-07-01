@@ -7,7 +7,7 @@ const getPlayerGuess = () =>
 
 // !! strictly pure !!
 const justifyGuess = (targetNumber) => (guessNumber) => {
-  const judgeDiff = R.cond ([
+  return (R.cond ([
     [ R.flip (R.lte) (-10), 
       R.always ("Your guess is way too low compared to the target number!")
     ],
@@ -29,9 +29,7 @@ const justifyGuess = (targetNumber) => (guessNumber) => {
     [ R.flip (R.gte) (10), 
       R.always ("Your guess is way too high compared to the target number!")
     ]
-  ])
-
-  return judgeDiff(guessNumber - targetNumber);
+  ])) (guessNumber - targetNumber); 
 };
 
 // update message container based on the passed-in message string
