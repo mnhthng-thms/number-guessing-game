@@ -1,11 +1,18 @@
-// function generating random number in range of 0 to 100
+/* generateRandomNumber :: Void -> Number 
+   @TODO: function generating random number in range of 0 to 100 
+*/
 const generateRandomNumber = () => Math.floor(Math.random() * 101);
 
-// !! impure !!
+/* getPlayerGuess :: Void -> Number 
+   @TODO: extract value currently in the textbox 
+*/
 const getPlayerGuess = () =>
   parseInt(document.getElementById("guess-txt").value);
 
-// !! strictly pure !!
+/* justifyGuess :: Number -> Number -> String 
+   @TODO: compare the target number with the number guessed by user
+          & return a message to user
+*/
 const justifyGuess = (targetNumber) => (guessNumber) => {
   return (R.cond ([
     [ R.flip (R.lte) (-10), 
@@ -32,42 +39,54 @@ const justifyGuess = (targetNumber) => (guessNumber) => {
   ])) (guessNumber - targetNumber); 
 };
 
-// update message container based on the passed-in message string
+/* displayMessage :: String -> Void 
+   @TODO: update message container based on the passed-in message string 
+*/
 const displayMessage = (messageString) => {
   const messageDom = document.querySelector("div#message");
 
   messageDom.innerHTML = messageString;
+
   if (messageString === "Congratulations!! You guessed correctly!") {
+    // change background colour of the container to green
     messageDom.className = "alert alert-success";
   } else {
+    // change background colour of the container to yellow
     messageDom.className = "alert alert-danger";
   }
 };
 
-// !! totally impure !!
+/* updateGuessCounter :: Void -> Void 
+   @TODO: perform mutations around inner HTML of "div#guess-counter>span#num-guess"
+*/
 const updateGuessCounter = () => {
+  // extract the number of guesses left
   let guessesLeft = parseInt(
     document.getElementById("num-guess").innerHTML
   );
+
   if (guessesLeft <= 1) {
-    document.getElementById(
-      "guess-counter"
-    ).innerHTML = `The game ends here! The target number is <b>${targetNumber}</b>!`;
+    // stop counting
+    document.getElementById("guess-counter").innerHTML = 
+      `The game ends here! The target number is <b>${targetNumber}</b>!`;
 
     // this prospect function call will generate a closure around `targetNumber`;
-  } else {
+  } 
+  else {
+    //carry on counting
     document.getElementById("num-guess").innerHTML = guessesLeft - 1;
   }
 };
 
+/*   -*-LET THE GAME BEGIN-*-   */
+
 const targetNumber = generateRandomNumber();
 
-document
-  .getElementById("guess-btn")
-  .addEventListener("click", function (e) {
+document.getElementById("guess-btn").addEventListener("click", function (e) {
     updateGuessCounter();
 
     const message = justifyGuess(targetNumber)(getPlayerGuess());
     displayMessage(message);
+
     e.preventDefault();
-  });
+});
