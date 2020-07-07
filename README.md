@@ -9,3 +9,5 @@ Demo website accessible at [https://mnhthng-thms.github.io/number-guessing-game/
 ## Screenshot 
 
 ![GIF Screenshot](https://i.imgur.com/V2jFyqz.gif)
+
+Fun Fact: The textbox knows how to "sanitise" your input. Try it to learn what I mean by "sanitising" !!!
