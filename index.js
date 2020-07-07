@@ -3,11 +3,18 @@
 */
 const generateRandomNumber = () => Math.floor(Math.random() * 101);
 
-/* getPlayerGuess :: Void -> Number 
+/* getPlayerGuess :: Void -> Number
    @TODO: extract value currently in the textbox 
 */
-const getPlayerGuess = () =>
-  parseInt(document.getElementById("guess-txt").value);
+const getPlayerGuess = () => {
+  const guessTxt = document.getElementById("guess-txt"); 
+  const validatedInput = sanitise(guessTxt.value);
+  
+  // update the textbox with the sanitised input
+  guessTxt.value = validatedInput;
+
+  return validatedInput;
+}
 
 /* justifyGuess :: Number -> Number -> String 
    @TODO: compare the target number with the number guessed by user
